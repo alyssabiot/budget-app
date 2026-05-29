@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils'
 const nav = [
   { href: '/dashboard', label: 'Tableau de bord', icon: LayoutDashboard },
   { href: '/accounts',  label: 'Comptes',          icon: Building2 },
-  { href: '/expenses',  label: 'Frais fixes',       icon: Receipt },
+  { href: '/movements', label: 'Mouvements',        icon: Receipt },
 ]
 
 export default function Sidebar() {

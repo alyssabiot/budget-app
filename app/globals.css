@@ -2,6 +2,28 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --cat-income-solid:    0.66 0.15 155;
+  --cat-income-soft:     0.95 0.045 155;
+  --cat-income-ink:      0.42 0.12 155;
+
+  --cat-expense-solid:   0.66 0.17 28;
+  --cat-expense-soft:    0.95 0.05 28;
+  --cat-expense-ink:     0.46 0.15 28;
+
+  --cat-savings-solid:   0.60 0.16 290;
+  --cat-savings-soft:    0.95 0.05 290;
+  --cat-savings-ink:     0.44 0.15 290;
+
+  --cat-remaining-solid: 0.72 0.14 75;
+  --cat-remaining-soft:  0.95 0.06 80;
+  --cat-remaining-ink:   0.46 0.11 70;
+
+  --cat-total-solid:     0.64 0.13 230;
+  --cat-total-soft:      0.95 0.045 230;
+  --cat-total-ink:       0.42 0.12 230;
+}
+
 @layer base {
   *, *::before, *::after { box-sizing: border-box; }
   body { @apply bg-ink-50 text-ink-900 antialiased; min-height: 100vh; }
@@ -13,6 +35,25 @@
   .label     { @apply block text-xs font-medium text-ink-600 mb-1.5; }
   .btn       { @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all active:scale-95 disabled:opacity-40; }
   .btn-primary { @apply btn bg-accent text-white hover:bg-accent/90; }
-  .btn-ghost   { @apply btn text-ink-600 hover:bg-ink-100 border border-ink-200 hover:border-ink-400; }
+  .btn-dark    { @apply btn bg-ink-900 text-white hover:bg-ink-800; }
+  .btn-ghost   { @apply btn bg-white text-ink-600 border border-ink-200 hover:border-ink-400 hover:text-ink-900; }
   .btn-danger  { @apply btn text-red-600 hover:bg-red-50 border border-red-200; }
+  .btn-violet  {
+    @apply inline-flex items-center gap-2 h-[42px] px-[18px] rounded-[13px] text-sm font-semibold text-white bg-cat-savings-solid transition-all hover:brightness-110 active:scale-95;
+    @apply disabled:bg-ink-200 disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:brightness-100;
+  }
+
+  .bento-field {
+    @apply w-full bg-white border border-ink-200 rounded-[11px] px-3 py-2.5 text-sm text-ink-900 placeholder-ink-400 transition-colors;
+    @apply focus:outline-none focus:border-cat-savings-solid;
+  }
+  select.bento-field {
+    @apply appearance-none cursor-pointer pr-8 bg-no-repeat;
+    background-position: right 12px center;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none' stroke='%239e9b91' stroke-width='1.6' stroke-linecap='round'%3E%3Cpath d='M2 4l4 4 4-4'/%3E%3C/svg%3E");
+  }
+}
+
+.bento-field:focus {
+  box-shadow: 0 0 0 3px color-mix(in oklch, oklch(var(--cat-savings-solid)) 22%, transparent);
 }

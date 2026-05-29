@@ -21,7 +21,14 @@ module.exports = {
           DEFAULT: '#2563eb',
           light:   '#eff6ff',
           muted:   '#bfdbfe',
-        }
+        },
+        cat: {
+          income:    { solid: 'oklch(var(--cat-income-solid))',    soft: 'oklch(var(--cat-income-soft))',    ink: 'oklch(var(--cat-income-ink))' },
+          expense:   { solid: 'oklch(var(--cat-expense-solid))',   soft: 'oklch(var(--cat-expense-soft))',   ink: 'oklch(var(--cat-expense-ink))' },
+          savings:   { solid: 'oklch(var(--cat-savings-solid))',   soft: 'oklch(var(--cat-savings-soft))',   ink: 'oklch(var(--cat-savings-ink))' },
+          remaining: { solid: 'oklch(var(--cat-remaining-solid))', soft: 'oklch(var(--cat-remaining-soft))', ink: 'oklch(var(--cat-remaining-ink))' },
+          total:     { solid: 'oklch(var(--cat-total-solid))',     soft: 'oklch(var(--cat-total-soft))',     ink: 'oklch(var(--cat-total-ink))' },
+        },
       },
     },
   },

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Fraunces, DM_Sans } from 'next/font/google'
+import { BlurProvider } from '@/lib/blur'
 import './globals.css'
 
 const display = Fraunces({ subsets: ['latin'], variable: '--font-display', weight: ['400', '500', '600'] })
@@ -14,7 +15,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="fr">
       <body className={`${display.variable} ${body.variable} font-sans`}>
-        {children}
+        <BlurProvider>{children}</BlurProvider>
       </body>
     </html>
   )

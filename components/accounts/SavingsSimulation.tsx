@@ -1,5 +1,7 @@
 'use client'
-import { useState, useMemo } from 'react'
+import { useMemo, useState } from 'react'
+import Amount from '@/components/Amount'
+import { useBlur } from '@/lib/blur'
 import { formatCurrency } from '@/lib/utils'
 import { projectBalance } from '@/lib/savings'
 
@@ -11,7 +13,6 @@ interface Props {
 }
 
 const MAX_YEARS = 30
-
 const W = 600
 const H = 200
 const PAD_T = 12
@@ -22,8 +23,10 @@ const PLOT_W = W - PAD_L - PAD_R
 const PLOT_H = H - PAD_T - PAD_B
 
 export default function SavingsSimulation({ startBalance, monthlyContribution, annualRate, cap = null }: Props) {
+  const { blurred } = useBlur()
   const currentYear = new Date().getFullYear()
-  const [years, setYears] = useState(5)
+  const [years, setYears] = useState(10)
+  const [hover, setHover] = useState<number | null>(null)
   const months = years * 12
 
   const { series, totalContributed } = useMemo(
@@ -54,8 +57,6 @@ export default function SavingsSimulation({ startBalance, monthlyContribution, a
     return candidates.filter(y => y <= years)
   }, [years])
 
-  const [hover, setHover] = useState<number | null>(null)
-
   function onMove(e: React.MouseEvent<SVGSVGElement>) {
     const rect = e.currentTarget.getBoundingClientRect()
     const xRel = (e.clientX - rect.left) / rect.width
@@ -76,61 +77,57 @@ export default function SavingsSimulation({ startBalance, monthlyContribution, a
   }, [hover])
 
   return (
-    <div className="card p-5">
-      <h2 className="font-medium text-ink-700 text-sm mb-4">Simulation</h2>
+    <div className="bg-white border border-ink-100 rounded-[22px] px-6 py-5">
+      <h3 className="font-display text-[17px] font-semibold text-ink-900 mb-4">Simulation</h3>
 
       <div className="mb-5">
         <div className="flex items-baseline justify-between mb-2">
-          <label className="label mb-0">Horizon</label>
-          <span className="text-sm text-ink-700 font-medium">
-            {years} {years > 1 ? 'ans' : 'an'} <span className="text-ink-400">· {currentYear + years}</span>
+          <span className="text-[12.5px] font-semibold text-ink-600">Horizon</span>
+          <span className="text-sm font-semibold text-ink-800 whitespace-nowrap">
+            {years} {years > 1 ? 'ans' : 'an'} <span className="text-ink-400 font-medium">· {currentYear + years}</span>
           </span>
         </div>
-        <input type="range" min={1} max={MAX_YEARS} step={1}
-          value={years} onChange={e => setYears(parseInt(e.target.value))}
-          className="w-full accent-accent" />
-        <div className="flex justify-between text-xs text-ink-400 mt-1">
+        <input
+          type="range" min={1} max={MAX_YEARS} step={1}
+          value={years}
+          onChange={e => setYears(parseInt(e.target.value))}
+          className="w-full cursor-pointer [accent-color:oklch(var(--cat-savings-solid))]"
+        />
+        <div className="flex justify-between text-[11.5px] text-ink-400 mt-0.5">
           <span>{currentYear + 1}</span>
           <span>{currentYear + MAX_YEARS}</span>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5">
+      <div className="grid grid-cols-3 gap-4 mb-5">
         <div>
-          <p className="text-xs text-ink-400 mb-1">Solde projeté</p>
-          <p className="font-display text-2xl text-ink-900">{formatCurrency(finalBalance)}</p>
+          <p className="text-xs text-ink-400 mb-0.5">Solde projeté</p>
+          <Amount value={finalBalance} className="font-display text-2xl font-semibold text-cat-savings-ink block" />
         </div>
         <div>
-          <p className="text-xs text-ink-400 mb-1">Total versé</p>
-          <p className="font-display text-lg text-ink-700">{formatCurrency(totalContributed)}</p>
+          <p className="text-xs text-ink-400 mb-0.5">Total versé</p>
+          <Amount value={totalContributed} className="font-display text-lg font-semibold text-ink-800 block" />
         </div>
         <div>
-          <p className="text-xs text-ink-400 mb-1">Intérêts</p>
-          <p className="font-display text-lg text-ink-700">{formatCurrency(interestsEarned)}</p>
+          <p className="text-xs text-ink-400 mb-0.5">Intérêts</p>
+          <Amount value={interestsEarned} className="font-display text-lg font-semibold text-cat-income-ink block" />
         </div>
       </div>
 
       <div className="border-t border-ink-100 pt-4 relative">
-        <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto" preserveAspectRatio="none" role="img" aria-label="Évolution du solde"
+        <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto block" preserveAspectRatio="none" role="img" aria-label="Évolution du solde"
           onMouseMove={onMove} onMouseLeave={() => setHover(null)}>
-          <defs>
-            <linearGradient id="savings-grad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="currentColor" stopOpacity="0.18" />
-              <stop offset="100%" stopColor="currentColor" stopOpacity="0" />
-            </linearGradient>
-          </defs>
-
-          <path d={areaPath} fill="url(#savings-grad)" className="text-accent" />
-          <path d={linePath} fill="none" stroke="currentColor" strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" className="text-accent" vectorEffect="non-scaling-stroke" />
+          <path d={areaPath} fill="oklch(var(--cat-savings-soft))" />
+          <path d={linePath} fill="none" stroke="oklch(var(--cat-savings-solid))" strokeWidth={2.5} strokeLinejoin="round" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
 
           {capY != null && capY >= PAD_T && capY <= PAD_T + PLOT_H && (
             <g>
               <line
                 x1={PAD_L} x2={PAD_L + PLOT_W} y1={capY} y2={capY}
-                stroke="currentColor" strokeWidth={1} strokeDasharray="4 4" className="text-rose-500"
+                stroke="oklch(var(--cat-remaining-solid))" strokeWidth={1} strokeDasharray="4 4"
                 vectorEffect="non-scaling-stroke"
               />
-              <text x={PAD_L + PLOT_W - 4} y={capY - 4} textAnchor="end" fontSize={10} fill="currentColor" className="text-rose-500">
+              <text x={PAD_L + PLOT_W - 4} y={capY - 4} textAnchor="end" fontSize={10} fill="oklch(var(--cat-remaining-ink))" style={blurred ? { filter: 'blur(4px)' } : undefined}>
                 Plafond {formatCurrency(cap!)}
               </text>
             </g>
@@ -140,8 +137,8 @@ export default function SavingsSimulation({ startBalance, monthlyContribution, a
             const x = PAD_L + ((y * 12) / (fullSeries.length - 1)) * PLOT_W
             return (
               <g key={y}>
-                <line x1={x} x2={x} y1={PAD_T} y2={PAD_T + PLOT_H} stroke="currentColor" strokeOpacity={0.08} className="text-ink-900" />
-                <text x={x} y={H - 6} textAnchor="middle" fontSize={10} fill="currentColor" className="text-ink-400">
+                <line x1={x} x2={x} y1={PAD_T} y2={PAD_T + PLOT_H} stroke="#181714" strokeOpacity={0.07} />
+                <text x={x} y={H - 6} textAnchor="middle" fontSize={10} fill="#9e9b91">
                   {currentYear + y}
                 </text>
               </g>
@@ -152,10 +149,10 @@ export default function SavingsSimulation({ startBalance, monthlyContribution, a
             <g>
               <line
                 x1={pts[hover][0]} x2={pts[hover][0]} y1={PAD_T} y2={PAD_T + PLOT_H}
-                stroke="currentColor" strokeOpacity={0.25} strokeDasharray="3 3" className="text-ink-900"
+                stroke="#2a2925" strokeOpacity={0.25} strokeDasharray="3 3"
                 vectorEffect="non-scaling-stroke"
               />
-              <circle cx={pts[hover][0]} cy={pts[hover][1]} r={4} fill="white" stroke="currentColor" strokeWidth={2} className="text-accent" vectorEffect="non-scaling-stroke" />
+              <circle cx={pts[hover][0]} cy={pts[hover][1]} r={4} fill="white" stroke="oklch(var(--cat-savings-solid))" strokeWidth={2} vectorEffect="non-scaling-stroke" />
             </g>
           )}
         </svg>
@@ -169,7 +166,7 @@ export default function SavingsSimulation({ startBalance, monthlyContribution, a
             }}
           >
             <div className="text-ink-400 capitalize">{hoverLabel}</div>
-            <div className="font-display">{formatCurrency(fullSeries[hover])}</div>
+            <Amount value={fullSeries[hover]} className="font-display block" />
           </div>
         )}
       </div>

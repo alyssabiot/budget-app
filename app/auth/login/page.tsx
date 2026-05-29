@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
+import AuthHero from '@/components/auth/AuthHero'
 
 export default function LoginPage() {
   const [email, setEmail]       = useState('')
@@ -28,32 +29,52 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 bg-ink-50">
-      <div className="w-full max-w-sm">
-        <h1 className="font-display text-3xl text-ink-900 mb-1">Connexion</h1>
-        <p className="text-sm text-ink-400 mb-8">Accédez à vos frais fixes</p>
+    <div className="min-h-screen flex bg-ink-50">
+      <AuthHero />
+      <div className="flex-1 flex justify-center px-6 pt-[20vh] pb-12">
+        <div className="w-full max-w-md">
+          <h1 className="font-display text-[40px] font-semibold text-ink-900 leading-tight mb-10">Connexion</h1>
 
-        <form onSubmit={submit} className="space-y-4">
-          <div>
-            <label className="label">Email</label>
-            <input type="email" className="input" placeholder="vous@exemple.com"
-              value={email} onChange={e => setEmail(e.target.value)} required />
-          </div>
-          <div>
-            <label className="label">Mot de passe</label>
-            <input type="password" className="input" placeholder="••••••••"
-              value={password} onChange={e => setPassword(e.target.value)} required />
-          </div>
-          {error && <p className="text-sm text-red-500 bg-red-50 border border-red-100 rounded-lg px-3 py-2">{error}</p>}
-          <button type="submit" disabled={loading} className="btn-primary w-full justify-center">
-            {loading ? 'Connexion…' : 'Se connecter'}
-          </button>
-        </form>
+          <form onSubmit={submit} className="space-y-5">
+            <div>
+              <label className="block text-sm font-semibold text-ink-700 mb-1.5">Email</label>
+              <input
+                type="email"
+                className="bento-field"
+                placeholder="toi@exemple.com"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-ink-700 mb-1.5">Mot de passe</label>
+              <input
+                type="password"
+                className="bento-field"
+                placeholder="••••••••"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                required
+              />
+            </div>
+            {error && (
+              <p className="text-sm text-cat-expense-ink bg-cat-expense-soft rounded-[11px] px-3 py-2.5">
+                {error}
+              </p>
+            )}
+            <button type="submit" disabled={loading} className="btn-violet w-full justify-center">
+              {loading ? 'Connexion…' : 'Se connecter'}
+            </button>
+          </form>
 
-        <p className="text-sm text-ink-400 text-center mt-6">
-          Pas de compte ?{' '}
-          <Link href="/auth/register" className="text-accent hover:underline">Créer un compte</Link>
-        </p>
+          <p className="text-[14px] text-ink-400 text-center mt-8">
+            Pas encore de compte ?{' '}
+            <Link href="/auth/register" className="font-semibold text-cat-savings-ink hover:text-cat-savings-solid">
+              Créer un compte
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   )
